@@ -5,6 +5,21 @@ import { DatabaseService } from 'src/database/database.service';
 export class EmployeesService {
   constructor(private readonly databaseService:DatabaseService){}
   async create(createEmployeeDto: Prisma.EmployeeCreateInput) {
+    const existingUser=this.databaseService.employee.findUnique({
+      where:{
+        name:createEmployeeDto.name,
+        email:createEmployeeDto.email,
+        role:createEmployeeDto.role
+      }
+    })
+
+    console.log(existingUser);
+
+    if(existingUser){
+      return {
+        message:"User is already register in the database"
+      }
+    }
     return this.databaseService.employee.create({
       data:createEmployeeDto
     })
